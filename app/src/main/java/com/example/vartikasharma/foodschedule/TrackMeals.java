@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +23,6 @@ public class TrackMeals extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         for(String mealName : mealList) {
             String mealTime = prefs.getString(mealName, null);
-            Log.i(LOG_TAG, "meal name, " + mealName);
-            Log.i(LOG_TAG, "mealTime, " + mealTime);
             if (mealName != null && mealTime != null) {
                 addView(mealName, mealTime);
             }
@@ -33,12 +30,14 @@ public class TrackMeals extends AppCompatActivity {
     }
 
     private void addView(String mealName, String mealTime) {
-        LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater vi = (LayoutInflater) getApplicationContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.meal_tracking_layout, null);
         TextView mealNameText = (TextView) v.findViewById(R.id.meal_name_track_text);
         mealNameText.setText(mealName);
         TextView mealTimeText = (TextView) v.findViewById(R.id.meal_time_track_text);
         mealTimeText.setText(mealTime);
-        insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 }

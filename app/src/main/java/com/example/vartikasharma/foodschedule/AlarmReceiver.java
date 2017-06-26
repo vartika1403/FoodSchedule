@@ -14,10 +14,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String mealText = intent.getStringExtra("MealText");
-        Log.i(LOG_TAG, "mealText, " + mealText);
-
         String mealTime = intent.getStringExtra("MealTime");
-        Log.i(LOG_TAG, "mealTime, " + mealTime);
 
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);

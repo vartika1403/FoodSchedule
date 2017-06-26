@@ -23,8 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,7 +30,6 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String MY_PREFS_NAME = "MyPrefs";
-    Map<String, String> hashMapStoreMeals = new HashMap<String, String>();
     private String[] mealList = {"Breakfast", "MorningSnack", "Lunch", "Evening Snack", "Dinner"};
 
     @Override
@@ -72,9 +69,7 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 Date dateObj = dateFormat.parse(time);
                                 String newTime = _12HourSDF.format(dateObj);
-                                Log.i(LOG_TAG, "newTime, " + newTime);
                                 mealTime.setText(newTime);
-                                Log.i(LOG_TAG, "selected hour, " + selectedHour);
                                 calendar.setTimeInMillis(System.currentTimeMillis());
                                 calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
                                 calendar.set(Calendar.MINUTE, selectedMinute);
@@ -93,9 +88,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
                 {
-                    if ( isChecked)
+                    if (isChecked)
                     {
-                        Log.i(LOG_TAG, "isChecked," + item);
                         scheduleNotification(calendar, item, mealTime.getText().toString());
 
                     }
@@ -119,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
                 PendingIntent.FLAG_ONE_SHOT);
 
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        Log.i(LOG_TAG, "time alarm, " + calendar.getTimeInMillis());
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 24 * 60 * 60 * 1000, pendingIntent);
     }
@@ -127,11 +120,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-       String mealName = intent.getStringExtra("mealName");
-        Log.i(LOG_TAG, "mealName, " + mealName);
+        String mealName = intent.getStringExtra("mealName");
         String mealTime = intent.getStringExtra("mealTime");
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        Log.i(LOG_TAG, "mealTime, " + mealTime);
         if (mealName != null && mealTime != null) {
             editor.putString(mealName, mealTime);
             editor.apply();
