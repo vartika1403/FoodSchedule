@@ -21,8 +21,11 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
@@ -60,8 +63,18 @@ public class MainActivity extends AppCompatActivity {
                     timePickerDialog = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                            mealTime.setText(selectedHour + ":" + selectedMinute);
-                            Log.i(LOG_TAG, "selected hour, " + selectedHour);
+                            String time = selectedHour + ":" + selectedMinute;
+                            DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+                            SimpleDateFormat _12HourSDF = new SimpleDateFormat("hh:mm a");
+                            try {
+                                Date dateObj = dateFormat.parse(time);
+                                String newTime = _12HourSDF.format(dateObj);
+                                Log.i(LOG_TAG, "newTime, " + newTime);
+                                mealTime.setText(newTime);
+                                Log.i(LOG_TAG, "selected hour, " + selectedHour);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }, hour, minute, false);
                     timePickerDialog.setTitle("Select Time");
