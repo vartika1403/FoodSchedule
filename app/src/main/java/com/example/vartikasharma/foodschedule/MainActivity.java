@@ -1,10 +1,15 @@
 package com.example.vartikasharma.foodschedule;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void createALayoutForMeals() {
         for (String item : mealList) {
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -81,8 +85,31 @@ public class MainActivity extends AppCompatActivity {
                     timePickerDialog.show();
                 }
             });
+            scheduleNotification(5000);
             ViewGroup insertPoint = (ViewGroup) findViewById(R.id.main_layout);
             insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
+
+
+    private void scheduleNotification(int delay) {
+
+        Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+       // notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_ID, 1);
+        //notificationIntent.putExtra(AlarmReceiver.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+  /*  private Notification getNotification(String content) {
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle("Scheduled Notification");
+        builder.setContentText(content);
+        builder.setContentIntent()
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        return builder.build();
+    }*/
 }
