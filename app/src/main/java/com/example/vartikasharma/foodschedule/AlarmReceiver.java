@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import static java.security.AccessController.getContext;
@@ -15,18 +16,26 @@ import static java.security.AccessController.getContext;
  */
 
 public class AlarmReceiver extends BroadcastReceiver {
+    private static final String LOG_TAG = AlarmReceiver.class.getSimpleName();
     public static String NOTIFICATION_ID = "notification-id";
     public static String NOTIFICATION = "notification";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        long when = System.currentTimeMillis();
+        String mealText = intent.getStringExtra("MealText");
+        Log.i(LOG_TAG, "mealText, " + mealText);
+
+        String mealTime = intent.getStringExtra("MealTime");
+        Log.i(LOG_TAG, "mealTime, " + mealTime);
+
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent notificationIntent = new Intent(context,
                 MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        notificationIntent.putExtra("mealName", mealText);
+        notificationIntent.putExtra("mealTime", mealTime);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -40,16 +49,16 @@ public class AlarmReceiver extends BroadcastReceiver {
         notificationView.setTextViewText(R.id.title, "Custom notification");
         notificationView.setTextViewText(R.id.text, "This is a custom layout");
 
-      //  Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(
                 context).setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Evening snack")
-                .setContentText("Custom Notification")
+                .setContentText(mealText)
                 .setAutoCancel(true)
                // .setAutoCancel(true).setWhen(when)
-                .setContentIntent(pendingIntent);
-               // .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
+                .setContentIntent(pendingIntent)
+                .addAction(R.mipmap.ic_launcher,"Track"+ mealText, pendingIntent)
+                .addAction(R.mipmap.ic_launcher, "Edit Settings", pendingIntent);
         notificationManager.notify(0, mNotifyBuilder.build());
 
 

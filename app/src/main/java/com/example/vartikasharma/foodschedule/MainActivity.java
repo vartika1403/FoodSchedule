@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.SystemClock;
@@ -21,8 +22,6 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,6 +35,8 @@ import butterknife.ButterKnife;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String MY_PREFS_NAME = "MyPrefs";
+    private  SharedPreferences.Editor editor;
     private String[] mealList = {"Breakfast", "MorningSnack", "Lunch", "Evening Snack", "Dinner"};
 
     @Override
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createALayoutForMeals() {
-        for (String item : mealList) {
+        for (final String item : mealList) {
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.meal_item_layout, null);
             final TextView mealText = (TextView) v.findViewById(R.id.meal_name_text);
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                                 calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
                                 calendar.set(Calendar.MINUTE, selectedMinute);
 
-                                scheduleNotification(calendar);
+                                scheduleNotification(calendar, item, newTime);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -97,9 +98,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void scheduleNotification(Calendar calendar) {
+    private void scheduleNotification(Calendar calendar, String itemText, String newTime) {
 
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+        notificationIntent.putExtra("MealText", itemText);
+        notificationIntent.putExtra("MealTime", newTime);
+
        // notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_ID, 1);
         //notificationIntent.putExtra(AlarmReceiver.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -108,5 +112,22 @@ public class MainActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         Log.i(LOG_TAG, "time alarm, " + calendar.getTimeInMillis());
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+       String mealName = intent.getStringExtra("mealName");
+        Log.i(LOG_TAG, "mealName, " + mealName);
+        String mealTime = intent.getStringExtra("mealTime");
+        Log.i(LOG_TAG, "mealTime, " + mealTime);
+        if (!mealName.isEmpty() && !mealTime.isEmpty()) {
+            // code to perform operation
+            editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+            editor.putString("mealName", mealName);
+            editor.putString("mealTime", mealTime);
+            editor.commit();
+
+        }
     }
 }
