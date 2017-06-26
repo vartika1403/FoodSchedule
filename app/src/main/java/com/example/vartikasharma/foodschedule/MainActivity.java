@@ -21,9 +21,6 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.text.DateFormat;
@@ -31,6 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
@@ -62,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Calendar currentTime = Calendar.getInstance();
                     int hour = currentTime.get(Calendar.HOUR_OF_DAY);
+                    final int date = currentTime.get(Calendar.DATE);
                     int minute = currentTime.get(Calendar.MINUTE);
                     TimePickerDialog timePickerDialog;
                     timePickerDialog = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
@@ -76,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
                                 Log.i(LOG_TAG, "newTime, " + newTime);
                                 mealTime.setText(newTime);
                                 Log.i(LOG_TAG, "selected hour, " + selectedHour);
+                                long start = System.currentTimeMillis();
+                                Calendar calendar = new GregorianCalendar();
+                                calendar.setTimeInMillis(System.currentTimeMillis());
+                                calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
+                                calendar.set(Calendar.MINUTE, selectedMinute);
+
+                                scheduleNotification(calendar);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -85,31 +91,22 @@ public class MainActivity extends AppCompatActivity {
                     timePickerDialog.show();
                 }
             });
-            scheduleNotification(5000);
             ViewGroup insertPoint = (ViewGroup) findViewById(R.id.main_layout);
             insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
 
 
-    private void scheduleNotification(int delay) {
+    private void scheduleNotification(Calendar calendar) {
 
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
        // notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_ID, 1);
         //notificationIntent.putExtra(AlarmReceiver.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+     //   long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+        Log.i(LOG_TAG, "time alarm, " + calendar.getTimeInMillis());
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
     }
-
-  /*  private Notification getNotification(String content) {
-        Notification.Builder builder = new Notification.Builder(this);
-        builder.setContentTitle("Scheduled Notification");
-        builder.setContentText(content);
-        builder.setContentIntent()
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-        return builder.build();
-    }*/
 }
