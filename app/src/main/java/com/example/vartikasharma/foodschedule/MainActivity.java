@@ -105,11 +105,8 @@ public class MainActivity extends AppCompatActivity {
         notificationIntent.putExtra("MealText", itemText);
         notificationIntent.putExtra("MealTime", newTime);
 
-       // notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_ID, 1);
-        //notificationIntent.putExtra(AlarmReceiver.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-     //   long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         Log.i(LOG_TAG, "time alarm, " + calendar.getTimeInMillis());
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
@@ -122,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i(LOG_TAG, "mealName, " + mealName);
         String mealTime = intent.getStringExtra("mealTime");
         Log.i(LOG_TAG, "mealTime, " + mealTime);
-        if (!mealName.isEmpty() && !mealTime.isEmpty()) {
+        if (mealName != null && mealTime != null) {
             // code to perform operation
             editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
             editor.putString("mealName", mealName);

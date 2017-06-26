@@ -7,18 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.RemoteViews;
-
-import static java.security.AccessController.getContext;
-
-/**
- * Created by vartikasharma on 26/06/17.
- */
 
 public class AlarmReceiver extends BroadcastReceiver {
     private static final String LOG_TAG = AlarmReceiver.class.getSimpleName();
-    public static String NOTIFICATION_ID = "notification-id";
-    public static String NOTIFICATION = "notification";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,27 +31,15 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        RemoteViews notificationView = new RemoteViews(
-                context.getPackageName(),
-                R.layout.custom_notification
-        );
-
-        notificationView.setImageViewResource(R.id.image, R.mipmap.ic_launcher);
-        notificationView.setTextViewText(R.id.title, "Custom notification");
-        notificationView.setTextViewText(R.id.text, "This is a custom layout");
-
 
         NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(
                 context).setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Evening snack")
                 .setContentText(mealText)
                 .setAutoCancel(true)
-               // .setAutoCancel(true).setWhen(when)
                 .setContentIntent(pendingIntent)
-                .addAction(R.mipmap.ic_launcher,"Track"+ mealText, pendingIntent)
-                .addAction(R.mipmap.ic_launcher, "Edit Settings", pendingIntent);
+                .addAction(0,"Track"+ mealText, pendingIntent)
+                .addAction(0, "Edit Settings", pendingIntent);
         notificationManager.notify(0, mNotifyBuilder.build());
-
-
     }
 }
