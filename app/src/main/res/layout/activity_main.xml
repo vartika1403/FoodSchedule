@@ -8,19 +8,19 @@
     tools:context="com.example.vartikasharma.foodschedule.MainActivity">
 
     <LinearLayout
-        android:orientation="vertical"
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     </LinearLayout>
 
-<Button
-    android:id="@+id/track_events"
-    android:layout_marginTop="10dp"
-    android:text="TRACK EVENTS"
-    android:layout_gravity="center_horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/track_events"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="TRACK EVENTS" />
 
 </LinearLayout>

@@ -31,14 +31,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
         NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(
                 context).setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Evening snack")
                 .setContentText(mealText)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
-                .addAction(0,"Track"+ mealText, pendingIntent)
+                .addAction(0, "Track" + mealText, pendingIntent)
                 .addAction(0, "Edit Settings", pendingIntent);
         notificationManager.notify(0, mNotifyBuilder.build());
     }

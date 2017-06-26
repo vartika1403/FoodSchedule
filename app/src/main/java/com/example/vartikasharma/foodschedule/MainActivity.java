@@ -28,7 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -36,7 +37,7 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String MY_PREFS_NAME = "MyPrefs";
-    private  SharedPreferences.Editor editor;
+    Map<String, String> hashMapStoreMeals = new HashMap<String, String>();
     private String[] mealList = {"Breakfast", "MorningSnack", "Lunch", "Evening Snack", "Dinner"};
 
     @Override
@@ -45,9 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-
         createALayoutForMeals();
-
     }
 
     private void createALayoutForMeals() {
@@ -77,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                                 Log.i(LOG_TAG, "newTime, " + newTime);
                                 mealTime.setText(newTime);
                                 Log.i(LOG_TAG, "selected hour, " + selectedHour);
-                                long start = System.currentTimeMillis();
                                 Calendar calendar = new GregorianCalendar();
                                 calendar.setTimeInMillis(System.currentTimeMillis());
                                 calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
@@ -121,11 +119,10 @@ public class MainActivity extends AppCompatActivity {
         Log.i(LOG_TAG, "mealTime, " + mealTime);
         if (mealName != null && mealTime != null) {
             // code to perform operation
-            editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
             editor.putString("mealName", mealName);
             editor.putString("mealTime", mealTime);
             editor.commit();
-
         }
     }
 
