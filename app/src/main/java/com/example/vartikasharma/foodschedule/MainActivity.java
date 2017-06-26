@@ -31,8 +31,8 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String MY_PREFS_NAME = "MyPrefs";
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
 
         createALayoutForMeals();
 
@@ -129,5 +130,11 @@ public class MainActivity extends AppCompatActivity {
             editor.commit();
 
         }
+    }
+
+    @OnClick(R.id.track_events)
+    public void trackEvents() {
+        Intent intent = new Intent(this, TrackMeals.class);
+        startActivity(intent);
     }
 }

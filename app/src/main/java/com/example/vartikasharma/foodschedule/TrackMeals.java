@@ -23,7 +23,7 @@ public class TrackMeals extends AppCompatActivity {
         String mealTime = prefs.getString("mealTime", null);
         Log.i(LOG_TAG, "meal name, " + mealName);
         Log.i(LOG_TAG, "mealTime, " + mealTime);
-        if (!mealName.isEmpty() && !mealTime.isEmpty()) {
+        if (mealName != null && mealTime != null) {
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.meal_tracking_layout, null);
             final TextView mealNameText = (TextView) v.findViewById(R.id.meal_name_track_text);
