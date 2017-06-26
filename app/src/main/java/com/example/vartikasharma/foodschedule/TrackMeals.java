@@ -13,6 +13,7 @@ import android.widget.TextView;
 public class TrackMeals extends AppCompatActivity {
     private static final String LOG_TAG = TrackMeals.class.getSimpleName();
     private static final String MY_PREFS_NAME = "MyPrefs";
+    private String[] mealList = {"Breakfast", "MorningSnack", "Lunch", "Evening Snack", "Dinner"};
     private ViewGroup insertPoint;
 
     @Override
@@ -21,12 +22,13 @@ public class TrackMeals extends AppCompatActivity {
         setContentView(R.layout.activity_track_meals);
         insertPoint = (ViewGroup) findViewById(R.id.activity_track_meals);
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String mealName = prefs.getString("mealName", null);
-        String mealTime = prefs.getString("mealTime", null);
-        Log.i(LOG_TAG, "meal name, " + mealName);
-        Log.i(LOG_TAG, "mealTime, " + mealTime);
-        if (mealName != null && mealTime != null) {
-            addView(mealName, mealTime);
+        for(String mealName : mealList) {
+            String mealTime = prefs.getString(mealName, null);
+            Log.i(LOG_TAG, "meal name, " + mealName);
+            Log.i(LOG_TAG, "mealTime, " + mealTime);
+            if (mealName != null && mealTime != null) {
+                addView(mealName, mealTime);
+            }
         }
     }
 

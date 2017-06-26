@@ -18,7 +18,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
             final TextView mealText = (TextView) v.findViewById(R.id.meal_name_text);
             mealText.setText(item);
             final TextView mealTime = (TextView) v.findViewById(R.id.meal_time_text);
+            final Calendar calendar = new GregorianCalendar();
             mealTime.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -76,12 +80,11 @@ public class MainActivity extends AppCompatActivity {
                                 Log.i(LOG_TAG, "newTime, " + newTime);
                                 mealTime.setText(newTime);
                                 Log.i(LOG_TAG, "selected hour, " + selectedHour);
-                                Calendar calendar = new GregorianCalendar();
                                 calendar.setTimeInMillis(System.currentTimeMillis());
                                 calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
                                 calendar.set(Calendar.MINUTE, selectedMinute);
 
-                                scheduleNotification(calendar, item, newTime);
+                              //  scheduleNotification(calendar, item, newTime);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -89,6 +92,22 @@ public class MainActivity extends AppCompatActivity {
                     }, hour, minute, false);
                     timePickerDialog.setTitle("Select Time");
                     timePickerDialog.show();
+                }
+            });
+            CheckBox checkBoxMeal = ( CheckBox )v.findViewById( R.id.check_box);
+            checkBoxMeal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+                {
+                    if ( isChecked)
+                    {
+                      //  hashMapStoreMeals.put(item, mealTime.toString());
+                        Log.i(LOG_TAG, "isChecked," + item);
+                        scheduleNotification(calendar, item, mealTime.getText().toString());
+
+                    }
+
                 }
             });
             ViewGroup insertPoint = (ViewGroup) findViewById(R.id.main_layout);
@@ -116,12 +135,13 @@ public class MainActivity extends AppCompatActivity {
        String mealName = intent.getStringExtra("mealName");
         Log.i(LOG_TAG, "mealName, " + mealName);
         String mealTime = intent.getStringExtra("mealTime");
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         Log.i(LOG_TAG, "mealTime, " + mealTime);
         if (mealName != null && mealTime != null) {
             // code to perform operation
-            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-            editor.putString("mealName", mealName);
-            editor.putString("mealTime", mealTime);
+            editor.putString(mealName, mealTime);
+         //   editor.putString("mealName", mealName);
+           // editor.putString("mealTime", mealTime);
             editor.commit();
         }
     }
